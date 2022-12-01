@@ -3,17 +3,39 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const morgan = require('morgan')
+const monggose = require('mongoose')
 
 const loginRoute = require('./api/routes/login')
 const signupRoute = require('./api/routes/signup')
+const { default: mongoose } = require('mongoose')
 
 //MIDDLEWARES: Any piece of code which will be executed after the server and before managing the routes.
 //Eg -> DB connection. 
 // 1. Nodemon: A middleware which is a development middleware.
 // 2. Body-Parser: Give you an access to req.body objecte
+// Extended: false --> only work on string and array type data
+// Extended: true --> Any type of data
 
 app.use( bodyParser.urlencoded( {extended: false} ) )
 app.use( bodyParser.json() )
+
+// 3. Morgan --> Dev DEP --> Logger middleware --> Any request made on the API, will be logged in the console
+
+app.use( morgan('dev'))
+
+//4. Mongoose --> make a dp connection before the routes are managed --> .connect( connection string )
+mongoose.connect('mongodb+srv://Devangini:Devang_123@cluster0.bri1x.mongodb.net/cu_21?retryWrites=true&w=majority')
+    .then(console.log('Connection to DB Successful !'))
+    .catch(error => console.log(err) )
+    // .catch( err => console.error(err))
+
+
+/* try{
+    async() => await mongoose.connect('mongodb+srv://Devangini:Devang_123@cluster0.bri1x.mongodb.net/?retryWrites=true&w=majority')
+}catch{
+    console.log('Error occured while connecting')
+} */
 
 //Syntax: app.use('path',(request, response) => {...} )
 //request and response give by: Express
